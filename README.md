@@ -50,6 +50,13 @@ Các sự kiện trang gửi đi:
 
 Khi tạo chiến dịch, chọn mục tiêu **Leads** và sự kiện tối ưu là **Lead**. Kiểm tra bằng tab **Test events** trong Events Manager trước khi chạy tiền thật.
 
+## 2b. TikTok Pixel
+
+1. TikTok Ads Manager → **Tools → Events → Web Events → Set up web events** → chọn **TikTok Pixel**, cách cài **Manually install pixel code**.
+2. Copy Pixel ID (dãy chữ số, dạng `C...`) dán vào `TIKTOK_PIXEL_ID` trong `config.js`. Không cần dán đoạn code TikTok vào trang, `main.js` đã có sẵn.
+3. Trang gửi `PageView` (tự động), `InitiateCheckout`, `Lead` (kèm giá trị) và `Contact` (bấm Zalo). Chọn sự kiện tối ưu là **Lead** khi tạo chiến dịch.
+4. Kiểm tra bằng **Test Events** trong TikTok Events Manager.
+
 ## 3. Nút Zalo
 
 Điền `ZALO_URL` trong `config.js`, ví dụ `https://zalo.me/0912345678` (hoặc link Zalo OA). Để trống thì các nút Zalo tự ẩn.

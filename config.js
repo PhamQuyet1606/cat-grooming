@@ -7,6 +7,9 @@ window.SACHBY_CONFIG = {
   // ID Meta Pixel (dãy số trong Events Manager). Để trống thì không tải Pixel.
   META_PIXEL_ID: "1840425470500111",
 
+  // ID TikTok Pixel (trong TikTok Ads Manager → Tools → Events → Web Events). Để trống thì không tải.
+  TIKTOK_PIXEL_ID: "DBJJ29JC77U24SKT7S9G",
+
   // Link Zalo để khách nhắn trực tiếp, ví dụ "https://zalo.me/0912345678".
   // Để trống thì ẩn các nút Zalo.
   ZALO_URL: "",
