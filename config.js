@@ -5,7 +5,7 @@ window.SACHBY_CONFIG = {
   FORM_ENDPOINT: "https://script.google.com/macros/s/AKfycbxcdGPsA92YATxsLrs-pq2Z16bg1SKglZyqFW_MGQ1OGA8i3wrzqnPHsGfU0SoULbuV/exec",
 
   // ID Meta Pixel (dãy số trong Events Manager). Để trống thì không tải Pixel.
-  META_PIXEL_ID: "",
+  META_PIXEL_ID: "1840425470500111",
 
   // Link Zalo để khách nhắn trực tiếp, ví dụ "https://zalo.me/0912345678".
   // Để trống thì ẩn các nút Zalo.

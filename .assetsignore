@@ -1,0 +1,8 @@
+# File không cần public khi deploy lên Cloudflare
+README.md
+google-apps-script
+.gitignore
+.assetsignore
+wrangler.jsonc
+wrangler.toml
+assets/cat.jpg
