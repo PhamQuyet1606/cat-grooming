@@ -6,3 +6,5 @@ google-apps-script
 wrangler.jsonc
 wrangler.toml
 assets/cat.jpg
+.wrangler
+.DS_Store

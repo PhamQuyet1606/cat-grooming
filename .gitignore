@@ -2,3 +2,6 @@
 node_modules/
 # Ảnh gốc (nặng), trang chỉ dùng bản đã nén
 assets/cat.jpg
+
+# Cache của wrangler
+.wrangler/
