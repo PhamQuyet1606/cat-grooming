@@ -39,11 +39,17 @@
 
   // Gửi sự kiện cho cả Meta và TikTok (nền tảng nào chưa cài thì bỏ qua).
   var TIKTOK_EVENTS = { Lead: "Lead", Contact: "Contact", InitiateCheckout: "InitiateCheckout" };
-  function track(eventName, data) {
+  // contentId: mã gói dịch vụ gửi cho TikTok (TikTok yêu cầu content_id trong mỗi sự kiện).
+  function track(eventName, data, contentId, quantity) {
     if (typeof window.fbq === "function") window.fbq("track", eventName, data || {});
     if (window.ttq && typeof window.ttq.track === "function" && TIKTOK_EVENTS[eventName]) {
       var d = data || {};
-      window.ttq.track(TIKTOK_EVENTS[eventName], d.value ? { value: d.value, currency: d.currency, content_name: d.content_name } : {});
+      var params = {
+        contents: [{ content_id: contentId || "tam-meo", content_type: "product", content_name: "Gói tắm mèo tại nhà", quantity: quantity || 1 }],
+        content_type: "product"
+      };
+      if (d.value) { params.value = d.value; params.currency = d.currency; }
+      window.ttq.track(TIKTOK_EVENTS[eventName], params);
     }
   }
 
@@ -209,7 +215,7 @@
   function afterSent(payload) {
     var price = payload.weight === "tu-5kg" ? cfg.PRICE_FROM_5KG : cfg.PRICE_UNDER_5KG;
     var count = payload.cats === "3+" ? 3 : Number(payload.cats) || 1;
-    track("Lead", { value: (price || 0) * count, currency: "VND", content_name: payload.variant });
+    track("Lead", { value: (price || 0) * count, currency: "VND", content_name: payload.variant }, "tam-meo-" + payload.weight, count);
     showSuccess();
   }
 
