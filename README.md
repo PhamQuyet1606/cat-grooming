@@ -100,6 +100,14 @@ Sửa nội dung các tiêu đề trong `main.js`, biến `VARIANTS`.
   `<meta property="og:image" content="https://<tên-miền>/assets/og.jpg">`
 - Ảnh hiện tại lấy từ Pexels (miễn phí cho mục đích thương mại). Khi có ảnh tự chụp (bé sau khi sấy, túi dụng cụ tiệt trùng), thay vào cùng tên file. Nén dưới ~200KB (ví dụ bằng squoosh.app) để trang tải nhanh trên 4G.
 
+## 7. Trang tuyển groomer (`/groomer`)
+
+- File: `groomer.html` + `groomer.js` (dùng chung `styles.css`, `config.js`). Link nhỏ ở chân trang chủ: "Bạn là groomer? Đăng ký hợp tác".
+- Link để dán vào bài tuyển: `https://sachby.com/groomer?utm_source=facebook&utm_campaign=tuyen-groomer` (đổi `utm_source` theo nơi đăng để biết groomer đến từ đâu).
+- Đăng ký ghi vào sheet **Groomers** (tự tạo ở lần gửi đầu), tách khỏi sheet `Leads` của khách.
+- Trang này **không** tải Meta/TikTok Pixel và không gửi sự kiện `Lead`, để quảng cáo không tối ưu nhầm sang groomer.
+- Sau khi cập nhật `google-apps-script/Code.gs`: dán lại code vào Apps Script, rồi **Deploy → Manage deployments → Edit → New version** (URL giữ nguyên). Nếu chưa làm bước này, đăng ký groomer sẽ bị ghi nhầm vào sheet `Leads`.
+
 ## Checklist trước khi bật quảng cáo
 
 - [ ] `FORM_ENDPOINT` đã điền, gửi thử 1 lead và thấy dòng mới trong sheet

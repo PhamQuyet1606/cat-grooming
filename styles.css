@@ -55,6 +55,8 @@ a { color: inherit; }
 .btn--primary[disabled] { opacity: .7; cursor: progress; }
 .btn--ghost { background: transparent; border-color: var(--ink); color: var(--ink); }
 .btn--ghost:hover { background: var(--cream-2); }
+.btn--soft { background: #FCE6DC; color: var(--peach-dark); }
+.btn--soft:hover { background: #F9D6C6; }
 .btn--sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
 .btn--block { width: 100%; }
 
@@ -162,3 +164,25 @@ input[aria-invalid="true"] { border-color: var(--danger); }
 .hero__art.has-photo { max-width: none; }
 .hero__art.has-photo .hero__photo { display: block; }
 .hero__art.has-photo .hero-cat { display: none; }
+
+/* ---------- Trang tuyển groomer (groomer.html) ---------- */
+.g-hero { text-align: center; }
+.g-hero .lead { margin-left: auto; margin-right: auto; }
+.g-hero .hero__actions { justify-content: center; }
+input[type="text"], input[type="url"] { width: 100%; height: 54px; padding: 0 16px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--white); font: inherit; font-size: 17px; color: var(--ink); }
+input[type="text"]::placeholder, input[type="url"]::placeholder { color: #B3A79F; }
+.field__optional { font-weight: 400; color: var(--ink-2); font-size: 14px; }
+.chip input[type="checkbox"]:checked + span { background: var(--mint); border-color: var(--mint); color: var(--white); }
+.footer a { color: var(--ink-2); }
+.footer__link { margin-top: 8px !important; }
+.promise--wide { border: 2px solid var(--peach); }
+.promise--wide .promise__icon { background: #FCE6DC; }
+.promise--wide .promise__icon svg { stroke: var(--peach-dark); }
+@media (min-width: 720px) {
+  .grid--2 { grid-template-columns: repeat(2, 1fr); }
+  .grid--2 .promise--wide { grid-column: 1 / -1; }
+  .steps--3 { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 900px) {
+  .steps--3 { grid-template-columns: repeat(3, 1fr); }
+}

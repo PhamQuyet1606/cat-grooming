@@ -11,6 +11,14 @@ var HEADERS = [
   "fbclid", "Trang", "Referrer", "Trạng thái", "Ghi chú"
 ];
 
+// Đăng ký groomer (trang /groomer) ghi vào sheet riêng.
+var GROOMER_SHEET = "Groomers";
+var GROOMER_HEADERS = [
+  "Thời gian", "Họ tên", "Số điện thoại", "Khu vực", "Kinh nghiệm", "Đã spa cho mèo",
+  "Khung giờ", "Link tác phẩm", "utm_source", "utm_campaign", "Referrer",
+  "Trạng thái", "Ghi chú"
+];
+
 function doPost(e) {
   var p = (e && e.parameter) || {};
 
@@ -19,6 +27,8 @@ function doPost(e) {
 
   var phone = String(p.phone || "").replace(/\D/g, "");
   if (!/^0[35789]\d{8}$/.test(phone)) return reply_("invalid");
+
+  if (p.form === "groomer") return saveGroomer_(p, phone);
 
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
@@ -37,6 +47,27 @@ function doPost(e) {
       safe_(p.utm_content), safe_(p.utm_term), safe_(p.fbclid),
       safe_(p.page), safe_(p.referrer),
       "Mới", ""
+    ]);
+  } finally {
+    lock.releaseLock();
+  }
+  return reply_("ok");
+}
+
+function saveGroomer_(p, phone) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(GROOMER_SHEET) || ss.insertSheet(GROOMER_SHEET);
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(GROOMER_HEADERS);
+      sheet.setFrozenRows(1);
+    }
+    sheet.appendRow([
+      new Date(), safe_(p.name), "'" + phone, safe_(p.area), safe_(p.experience), safe_(p.cats),
+      safe_(p.times), safe_(p.portfolio), safe_(p.utm_source), safe_(p.utm_campaign),
+      safe_(p.referrer), "Mới", ""
     ]);
   } finally {
     lock.releaseLock();
