@@ -37,21 +37,55 @@
     /* eslint-enable */
   }
 
+  // ---------- Định danh người dùng cho TikTok (băm SHA-256 ngay trên trình duyệt) ----------
+  function sha256(text) {
+    if (!(window.crypto && crypto.subtle && window.TextEncoder)) return Promise.resolve("");
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode(String(text).trim().toLowerCase())).then(function (buf) {
+      return Array.prototype.map.call(new Uint8Array(buf), function (x) { return ("0" + x.toString(16)).slice(-2); }).join("");
+    }).catch(function () { return ""; });
+  }
+  // external_id: mã ẩn danh bền vững trên trình duyệt này (không phải thông tin cá nhân).
+  function getExternalId() {
+    var id = "";
+    try { id = localStorage.getItem("sachby_xid") || ""; } catch (e) { /* bỏ qua */ }
+    if (!id) {
+      id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+      try { localStorage.setItem("sachby_xid", id); } catch (e) { /* bỏ qua */ }
+    }
+    return id;
+  }
+  // phone: số 0xxxxxxxxx -> E.164 (+84xxxxxxxxx) rồi băm. Chưa có số thì chỉ gửi external_id.
+  function identifyTikTok(phone) {
+    if (!window.ttq || typeof window.ttq.identify !== "function") return Promise.resolve();
+    var jobs = [sha256(getExternalId()), phone ? sha256("+84" + phone.slice(1)) : Promise.resolve("")];
+    return Promise.all(jobs).then(function (h) {
+      var info = {};
+      if (h[0]) info.external_id = h[0];
+      if (h[1]) info.phone_number = h[1];
+      if (info.external_id || info.phone_number) window.ttq.identify(info);
+    });
+  }
+
   // Gửi sự kiện cho cả Meta và TikTok (nền tảng nào chưa cài thì bỏ qua).
-  var TIKTOK_EVENTS = { Lead: "Lead", Contact: "Contact", InitiateCheckout: "InitiateCheckout" };
+  var TIKTOK_EVENTS = { ViewContent: "ViewContent", Lead: "Lead", Contact: "Contact", InitiateCheckout: "InitiateCheckout" };
   // contentId: mã gói dịch vụ gửi cho TikTok (TikTok yêu cầu content_id trong mỗi sự kiện).
   function track(eventName, data, contentId, quantity) {
     if (typeof window.fbq === "function") window.fbq("track", eventName, data || {});
     if (window.ttq && typeof window.ttq.track === "function" && TIKTOK_EVENTS[eventName]) {
       var d = data || {};
-      var params = {
+      // Mỗi sự kiện đều kèm value + currency (nếu thiếu thì lấy giá gói thấp nhất) để TikTok không báo thiếu tham số.
+      var value = d.value || cfg.PRICE_UNDER_5KG || 0;
+      window.ttq.track(TIKTOK_EVENTS[eventName], {
         contents: [{ content_id: contentId || "tam-meo", content_type: "product", content_name: "Gói tắm mèo tại nhà", quantity: quantity || 1 }],
-        content_type: "product"
-      };
-      if (d.value) { params.value = d.value; params.currency = d.currency; }
-      window.ttq.track(TIKTOK_EVENTS[eventName], params);
+        content_type: "product",
+        value: value,
+        currency: d.currency || "VND"
+      });
     }
   }
+
+  // ViewContent: gửi 1 lần khi trang tải, kèm external_id đã băm.
+  identifyTikTok("").then(function () { track("ViewContent", {}, "tam-meo"); });
 
   // ---------- Nguồn quảng cáo (UTM) ----------
   var TRACK_KEYS = ["v", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid"];
@@ -215,7 +249,11 @@
   function afterSent(payload) {
     var price = payload.weight === "tu-5kg" ? cfg.PRICE_FROM_5KG : cfg.PRICE_UNDER_5KG;
     var count = payload.cats === "3+" ? 3 : Number(payload.cats) || 1;
-    track("Lead", { value: (price || 0) * count, currency: "VND", content_name: payload.variant }, "tam-meo-" + payload.weight, count);
+    var sendLead = function () {
+      track("Lead", { value: (price || 0) * count, currency: "VND", content_name: payload.variant }, "tam-meo-" + payload.weight, count);
+    };
+    // identify (SDT đã băm) phải chạy trước sự kiện Lead.
+    identifyTikTok(payload.phone).then(sendLead, sendLead);
     showSuccess();
   }
 
