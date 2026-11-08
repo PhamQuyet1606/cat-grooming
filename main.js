@@ -250,7 +250,9 @@
     var price = payload.weight === "tu-5kg" ? cfg.PRICE_FROM_5KG : cfg.PRICE_UNDER_5KG;
     var count = payload.cats === "3+" ? 3 : Number(payload.cats) || 1;
     var sendLead = function () {
-      track("Lead", { value: (price || 0) * count, currency: "VND", content_name: payload.variant }, "tam-meo-" + payload.weight, count);
+      var data = { value: (price || 0) * count, currency: "VND", content_name: payload.variant };
+      var contentId = "tam-meo-" + payload.weight;
+      track("Lead", data, contentId, count);
     };
     // identify (SDT đã băm) phải chạy trước sự kiện Lead.
     identifyTikTok(payload.phone).then(sendLead, sendLead);
